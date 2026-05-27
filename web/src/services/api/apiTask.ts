@@ -2,6 +2,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBaseQuery } from "../../utils/createBaseQuery.ts";
 import type {ITaskItemResponse} from "../../types/task/ITaskItemResponse.ts";
 import type {ITasksSearchRequest} from "../../types/task/ITasksSearchRequest.ts";
+import type {ISetTaskCompletedRequest} from "../../types/task/ISetTaskCompletedRequest.ts";
 
 export const apiTasks = createApi({
     reducerPath: "tasks",
@@ -17,9 +18,28 @@ export const apiTasks = createApi({
             }),
             providesTags: ["Tasks"],
         }),
+
+        deleteTask: builder.mutation<void, number>({
+            query: (id) => ({
+                url: `${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Tasks"],
+        }),
+
+        setTaskCompleted: builder.mutation<void, ISetTaskCompletedRequest>({
+            query: (body) => ({
+                url: "complete",
+                method: "PATCH",
+                body,
+            }),
+            invalidatesTags: ["Tasks"],
+        }),
     }),
 });
 
 export const {
     useGetTasksQuery,
+    useDeleteTaskMutation,
+    useSetTaskCompletedMutation,
 } = apiTasks;
