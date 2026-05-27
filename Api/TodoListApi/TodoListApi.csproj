@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>6d081823-91db-4c00-86d2-1ce41639cc02</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BLL\BLL.csproj" />
+  </ItemGroup>
+
+  <Target Name="RunTests" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug' And '$(RunningTests)' != 'true'">
+    <Exec Command="dotnet test &quot;$(MSBuildProjectDirectory)/../TodoListApi.Tests/TodoListApi.Tests.csproj&quot; -p:RunningTests=true" ContinueOnError="false" />
+  </Target>
+
+</Project>
