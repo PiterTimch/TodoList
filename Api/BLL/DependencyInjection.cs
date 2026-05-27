@@ -17,4 +17,11 @@ public static class DependencyInjection
         services.AddScoped<ITaskService, TaskService>();
         return services;
     }
+
+    public static void ApplyDatabaseMigrations(this IServiceProvider serviceProvider)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        dbContext.Database.Migrate();
+    }
 }

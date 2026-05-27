@@ -3,7 +3,8 @@ import APP_ENV from "../env";
 
 export  const  createBaseQuery = (endpoint: string) =>
 {
+    const baseUrl = `${APP_ENV.API_BASE_URL ?? "/api"}`.replace(/\/+$/, "");
     return fetchBaseQuery({
-        baseUrl: `${APP_ENV.API_BASE_URL}/${endpoint}`
+        baseUrl: `${baseUrl}/${endpoint}`
     });
 }
