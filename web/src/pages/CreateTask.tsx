@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCreateTaskMutation } from "../services/api/apiTask.ts";
 import type { ICreateTaskRequest } from "../types/task/ICreateTaskRequest.ts";
 import { CreateTaskForm } from "../components/forms/CreateTaskForm.tsx";
+import { getApiErrorMessage } from "../utils/getApiErrorMessage.ts";
 
 const CreateTask: React.FC = () => {
     const navigate = useNavigate();
     const [createTask, { isLoading }] = useCreateTaskMutation();
+    const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
     const handleCreate = async (task: ICreateTaskRequest) => {
-        await createTask(task).unwrap();
-        navigate("/");
+        setErrorMessage(undefined);
+
+        try {
+            await createTask(task).unwrap();
+            navigate("/");
+        } catch (error) {
+            setErrorMessage(getApiErrorMessage(error));
+        }
     };
 
     return (
@@ -32,7 +40,11 @@ const CreateTask: React.FC = () => {
                 </div>
 
                 <div className="rounded-2xl bg-white p-5 shadow-sm sm:p-6">
-                    <CreateTaskForm onSubmit={handleCreate} isSubmitting={isLoading} />
+                    <CreateTaskForm
+                        onSubmit={handleCreate}
+                        isSubmitting={isLoading}
+                        errorMessage={errorMessage}
+                    />
                 </div>
             </div>
         </div>

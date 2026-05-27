@@ -3,15 +3,18 @@ import type { ICreateTaskRequest } from "../../types/task/ICreateTaskRequest.ts"
 import { TextInput } from "./TextInput.tsx";
 import { TextArea } from "./TextArea.tsx";
 import { CalendarInput } from "./CalendarInput.tsx";
+import { FormErrorMessage } from "./FormErrorMessage.tsx";
 
 type CreateTaskFormProps = {
     onSubmit: (task: ICreateTaskRequest) => void;
     isSubmitting?: boolean;
+    errorMessage?: string;
 };
 
 export const CreateTaskForm: React.FC<CreateTaskFormProps> = ({
     onSubmit,
     isSubmitting = false,
+    errorMessage,
 }) => {
     const [name, setName] = useState<string>("");
     const [description, setDescription] = useState<string>("");
@@ -54,6 +57,8 @@ export const CreateTaskForm: React.FC<CreateTaskFormProps> = ({
             >
                 Create
             </button>
+
+            <FormErrorMessage message={errorMessage} />
         </form>
     );
 };

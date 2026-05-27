@@ -4,10 +4,11 @@ import { useGetTasksQuery } from "../services/api/apiTask.ts";
 import type { ITasksSearchRequest } from "../types/task/ITasksSearchRequest.ts";
 import { SearchForm } from "../components/forms/SearchForm.tsx";
 import { TaskItem } from "../components/tasks/TaskItem.tsx";
+import { getApiErrorMessage } from "../utils/getApiErrorMessage.ts";
 
 const Home: React.FC = () => {
     const [search, setSearch] = useState<ITasksSearchRequest>({});
-    const { data } = useGetTasksQuery(search);
+    const { data, error } = useGetTasksQuery(search);
 
     const handleSearch = (next: ITasksSearchRequest) => {
         setSearch(next);
@@ -32,7 +33,10 @@ const Home: React.FC = () => {
                 </div>
 
                 <div className="mb-6 rounded-2xl bg-white p-5 shadow-sm sm:p-6">
-                    <SearchForm onSearch={handleSearch} />
+                    <SearchForm
+                        onSearch={handleSearch}
+                        errorMessage={getApiErrorMessage(error)}
+                    />
                 </div>
 
                 <div className="space-y-4">

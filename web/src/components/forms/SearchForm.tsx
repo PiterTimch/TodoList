@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import type { ITasksSearchRequest } from "../../types/task/ITasksSearchRequest.ts";
 import { TextInput } from "./TextInput.tsx";
 import { CalendarInput } from "./CalendarInput.tsx";
+import { FormErrorMessage } from "./FormErrorMessage.tsx";
 
 type SearchFormProps = {
     onSearch: (search: ITasksSearchRequest) => void;
+    errorMessage?: string;
 };
 
-export const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
+export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, errorMessage }) => {
     const [name, setName] = useState<string>("");
     const [dueDate, setDueDate] = useState<string | undefined>(undefined);
 
@@ -36,6 +38,8 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
             >
                 Find
             </button>
+
+            <FormErrorMessage message={errorMessage} />
         </form>
     );
 };
