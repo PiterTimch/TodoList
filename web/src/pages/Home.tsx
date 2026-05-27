@@ -23,7 +23,7 @@ const Home: React.FC = () => {
                         </h1>
 
                         <Link
-                            to=""
+                            to="/create"
                             className="inline-flex items-center justify-center rounded-xl bg-stone-700 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-stone-800"
                         >
                             +
@@ -38,7 +38,7 @@ const Home: React.FC = () => {
                 <div className="space-y-4">
                     {(data?.length ?? 0) === 0 ? (
                         <div className="rounded-2xl bg-white p-5 text-center text-stone-500 shadow-sm">
-                            Not found
+                            No tasks found.
                         </div>
                     ) : null}
 

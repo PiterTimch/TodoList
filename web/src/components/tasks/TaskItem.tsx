@@ -41,7 +41,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
             <div className="flex items-center justify-between gap-3">
                 <button
                     type="button"
-                    aria-label={task.isCompleted ? "Позначити як не виконану" : "Позначити як виконану"}
+                    aria-label={task.isCompleted ? "Mark as incomplete" : "Mark as complete"}
                     onClick={handleToggleCompleted}
                     disabled={isCompleting}
                     className="flex h-8 w-8 items-center justify-center rounded-lg border border-stone-500 bg-white text-stone-700 shadow-sm disabled:opacity-50"
@@ -68,7 +68,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
                 </div>
                 {task.dueDate ? (
                     <div className="text-sm">
-                        Date: {formatDate(task.dueDate)}
+                        Due: {formatDate(task.dueDate)}
                     </div>
                 ) : null}
             </div>

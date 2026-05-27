@@ -3,6 +3,7 @@ import { createBaseQuery } from "../../utils/createBaseQuery.ts";
 import type {ITaskItemResponse} from "../../types/task/ITaskItemResponse.ts";
 import type {ITasksSearchRequest} from "../../types/task/ITasksSearchRequest.ts";
 import type {ISetTaskCompletedRequest} from "../../types/task/ISetTaskCompletedRequest.ts";
+import type {ICreateTaskRequest} from "../../types/task/ICreateTaskRequest.ts";
 
 export const apiTasks = createApi({
     reducerPath: "tasks",
@@ -35,6 +36,15 @@ export const apiTasks = createApi({
             }),
             invalidatesTags: ["Tasks"],
         }),
+
+        createTask: builder.mutation<ITaskItemResponse, ICreateTaskRequest>({
+            query: (body) => ({
+                url: "",
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: ["Tasks"],
+        }),
     }),
 });
 
@@ -42,4 +52,5 @@ export const {
     useGetTasksQuery,
     useDeleteTaskMutation,
     useSetTaskCompletedMutation,
+    useCreateTaskMutation,
 } = apiTasks;
