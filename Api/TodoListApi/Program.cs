@@ -24,6 +24,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+app.Services.ApplyDatabaseMigrations();
 
 if (app.Environment.IsDevelopment())
 {
