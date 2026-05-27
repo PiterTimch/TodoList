@@ -1,6 +1,6 @@
 ﻿namespace BLL.Models.Task;
 
-public class TaskItemResponse
+public class TaskItemResponseModel
 {
     public long Id { get; set; }
     public string Name { get; set; } = null!;
