@@ -67,5 +67,19 @@ namespace TodoListApi.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
+        [HttpPatch("complete")]
+        public async Task<IActionResult> SetCompleted([FromBody] SetTaskCompletedRequestModel model)
+        {
+            try
+            {
+                await taskService.SetTaskCompletedAsync(model);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
     }
 }

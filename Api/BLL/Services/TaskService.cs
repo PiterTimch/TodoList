@@ -84,4 +84,15 @@ public class TaskService(AppDbContext context, IMapper mapper) : ITaskService
         return mapper.Map<TaskItemResponse>(entity);
     }
 
-}
+    public async Task SetTaskCompletedAsync(SetTaskCompletedRequestModel request)
+    {
+        var entity = await context.Tasks.FirstOrDefaultAsync(x => x.Id == request.Id && !x.IsDeleted);
+        if (entity == null)
+        {
+            throw new KeyNotFoundException($"Task with ID {request.Id} does not exist.");
+        }
+        entity.IsCompleted = request.IsCompleted;
+        await context.SaveChangesAsync();
+    }
+
+    }

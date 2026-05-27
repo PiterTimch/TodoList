@@ -8,4 +8,5 @@ public interface ITaskService
     Task<TaskItemResponse> CreateTaskAsync(CreateTaskRequestModel request);
     Task DeleteTaskAsync(long id);
     Task<TaskItemResponse> GetTaskByIdAsync(long id);
+    Task SetTaskCompletedAsync(SetTaskCompletedRequestModel request);
 }
