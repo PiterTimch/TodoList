@@ -9,7 +9,7 @@ namespace BLL.Services;
 
 public class TaskService(AppDbContext context, IMapper mapper) : ITaskService
 {
-    public async Task<IEnumerable<TaskItemResponse>> SearchTasksAsync(TasksSearchRequestModel request)
+    public async Task<IEnumerable<TaskItemResponseModel>> SearchTasksAsync(TasksSearchRequestModel request)
     {
         IQueryable<TaskEntity> query = context.Tasks
             .AsNoTracking()
@@ -41,10 +41,10 @@ public class TaskService(AppDbContext context, IMapper mapper) : ITaskService
             .OrderByDescending(x => x.DateCreated)
             .ToListAsync();
 
-        return mapper.Map<IEnumerable<TaskItemResponse>>(entities);
+        return mapper.Map<IEnumerable<TaskItemResponseModel>>(entities);
     }
 
-    public async Task<TaskItemResponse> CreateTaskAsync(CreateTaskRequestModel request)
+    public async Task<TaskItemResponseModel> CreateTaskAsync(CreateTaskRequestModel request)
     {
         if (request.DueDate.HasValue && request.DueDate.Value < DateTime.UtcNow)
         {
@@ -59,7 +59,7 @@ public class TaskService(AppDbContext context, IMapper mapper) : ITaskService
         context.Tasks.Add(entity);
         await context.SaveChangesAsync();
 
-        return mapper.Map<TaskItemResponse>(entity);
+        return mapper.Map<TaskItemResponseModel>(entity);
     }
 
     public async Task DeleteTaskAsync(long id)
@@ -74,14 +74,14 @@ public class TaskService(AppDbContext context, IMapper mapper) : ITaskService
         await context.SaveChangesAsync();
     }
 
-    public async Task<TaskItemResponse> GetTaskByIdAsync(long id)
+    public async Task<TaskItemResponseModel> GetTaskByIdAsync(long id)
     {
         var entity = await context.Tasks.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
         if (entity == null)
         {
             throw new KeyNotFoundException($"Task with ID {id} does not exist.");
         }
-        return mapper.Map<TaskItemResponse>(entity);
+        return mapper.Map<TaskItemResponseModel>(entity);
     }
 
     public async Task SetTaskCompletedAsync(SetTaskCompletedRequestModel request)

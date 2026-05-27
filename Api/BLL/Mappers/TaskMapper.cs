@@ -8,7 +8,7 @@ public class TaskMapper : Profile
 {
     public TaskMapper()
     {
-        CreateMap<TaskEntity, TaskItemResponse>();
+        CreateMap<TaskEntity, TaskItemResponseModel>();
         CreateMap<CreateTaskRequestModel, TaskEntity>();
     }
 }

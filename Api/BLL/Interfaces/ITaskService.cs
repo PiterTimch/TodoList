@@ -4,9 +4,9 @@ namespace BLL.Interfaces;
 
 public interface ITaskService
 {
-    Task<IEnumerable<TaskItemResponse>> SearchTasksAsync(TasksSearchRequestModel request);
-    Task<TaskItemResponse> CreateTaskAsync(CreateTaskRequestModel request);
+    Task<IEnumerable<TaskItemResponseModel>> SearchTasksAsync(TasksSearchRequestModel request);
+    Task<TaskItemResponseModel> CreateTaskAsync(CreateTaskRequestModel request);
     Task DeleteTaskAsync(long id);
-    Task<TaskItemResponse> GetTaskByIdAsync(long id);
+    Task<TaskItemResponseModel> GetTaskByIdAsync(long id);
     Task SetTaskCompletedAsync(SetTaskCompletedRequestModel request);
 }
