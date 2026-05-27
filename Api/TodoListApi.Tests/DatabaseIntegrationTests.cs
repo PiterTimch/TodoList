@@ -72,7 +72,6 @@ public class DatabaseIntegrationTests
         var taskService = scope.ServiceProvider.GetRequiredService<ITaskService>();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        // 1. Create a task
         var newTask = new CreateTaskRequestModel
         {
             Name = "Integration Test Task",
@@ -85,15 +84,12 @@ public class DatabaseIntegrationTests
         Assert.True(created.Id > 0);
         Assert.Equal(newTask.Name, created.Name);
 
-        // 2. Delete the task (soft delete)
         await taskService.DeleteTaskAsync(created.Id);
 
-        // 3. Verify it is marked as deleted in DB
         var dbEntity = await db.Tasks.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == created.Id);
         Assert.NotNull(dbEntity);
         Assert.True(dbEntity.IsDeleted);
 
-        // Clean up
         db.Tasks.Remove(dbEntity);
         await db.SaveChangesAsync();
     }
