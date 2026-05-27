@@ -17,14 +17,14 @@ public class TaskService(AppDbContext context, IMapper mapper) : ITaskService
 
         if (!string.IsNullOrWhiteSpace(request.Name))
         {
-            string name = request.Name.Trim();
-            query = query.Where(x => x.Name.Contains(name));
+            string name = request.Name.Trim().ToLower();
+            query = query.Where(x => x.Name.ToLower().Contains(name));
         }
 
         if (!string.IsNullOrWhiteSpace(request.Description))
         {
-            string description = request.Description.Trim();
-            query = query.Where(x => x.Description.Contains(description));
+            string description = request.Description.Trim().ToLower();
+            query = query.Where(x => x.Description.ToLower().Contains(description));
         }
 
         if (request.DueDate.HasValue)
@@ -95,4 +95,4 @@ public class TaskService(AppDbContext context, IMapper mapper) : ITaskService
         await context.SaveChangesAsync();
     }
 
-    }
+}
