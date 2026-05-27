@@ -7,4 +7,5 @@ public class TaskItemResponse
     public string Description { get; set; } = null!;
     public DateTime? DueDate { get; set; }
     public bool IsCompleted { get; set; }
+    public DateTime DateCreated { get; set; }
 }
