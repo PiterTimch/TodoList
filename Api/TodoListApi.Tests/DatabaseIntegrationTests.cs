@@ -51,7 +51,7 @@ public class DatabaseIntegrationTests
         {
             Name = "Past Task",
             Description = "Should fail",
-            DueDate = DateTime.UtcNow.AddMinutes(-5)
+            DueDate = DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-dd")
         };
 
         await Assert.ThrowsAsync<ArgumentException>(() => taskService.CreateTaskAsync(pastTask));
@@ -77,7 +77,7 @@ public class DatabaseIntegrationTests
         {
             Name = "Integration Test Task",
             Description = "Testing Lifecycle",
-            DueDate = DateTime.UtcNow.AddDays(1)
+            DueDate = DateTime.UtcNow.AddDays(1).ToString("yyyy-MM-dd")
         };
 
         var created = await taskService.CreateTaskAsync(newTask);

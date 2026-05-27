@@ -12,8 +12,15 @@ namespace TodoListApi.Controllers
         [HttpGet()]
         public async Task<IActionResult> Get([FromQuery] TasksSearchRequestModel model)
         {
-            var response = await taskService.SearchTasksAsync(model);
-            return Ok(response);
+            try
+            {
+                var response = await taskService.SearchTasksAsync(model);
+                return Ok(response);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet("{id}")]

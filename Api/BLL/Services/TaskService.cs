@@ -1,4 +1,5 @@
 using AutoMapper;
+using BLL.Helpers;
 using BLL.Interfaces;
 using BLL.Models.Task;
 using DAL;
@@ -27,9 +28,11 @@ public class TaskService(AppDbContext context, IMapper mapper) : ITaskService
             query = query.Where(x => x.Description.ToLower().Contains(description));
         }
 
-        if (request.DueDate.HasValue)
+        DateTime? dueDate = DateStringParser.ParseToUtcDate(request.DueDate);
+        if (dueDate.HasValue)
         {
-            query = query.Where(x => x.DueDate.Value.Date == request.DueDate.Value.Date);
+            DateTime searchDate = dueDate.Value.Date;
+            query = query.Where(x => x.DueDate.HasValue && x.DueDate.Value.Date == searchDate);
         }
 
         if (request.IsCompleted.HasValue)
@@ -46,12 +49,14 @@ public class TaskService(AppDbContext context, IMapper mapper) : ITaskService
 
     public async Task<TaskItemResponseModel> CreateTaskAsync(CreateTaskRequestModel request)
     {
-        if (request.DueDate.HasValue && request.DueDate.Value < DateTime.UtcNow)
+        DateTime? dueDate = DateStringParser.ParseToUtcDate(request.DueDate);
+        if (dueDate.HasValue && dueDate.Value.Date < DateTime.UtcNow.Date)
         {
             throw new ArgumentException("Due date cannot be in the past.");
         }
 
         var entity = mapper.Map<TaskEntity>(request);
+        entity.DueDate = dueDate;
         entity.DateCreated = DateTime.UtcNow;
         entity.IsDeleted = false;
         entity.IsCompleted = false;

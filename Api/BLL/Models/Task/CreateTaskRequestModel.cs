@@ -12,5 +12,5 @@ public class CreateTaskRequestModel
     [StringLength(300)]
     public string Description { get; set; } = null!;
 
-    public DateTime? DueDate { get; set; }
+    public string? DueDate { get; set; }
 }
