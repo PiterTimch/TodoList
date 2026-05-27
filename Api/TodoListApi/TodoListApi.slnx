@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="../BLL/BLL.csproj" />
   <Project Path="../DAL/DAL.csproj" />
+  <Project Path="../TodoListApi.Tests/TodoListApi.Tests.csproj" />
   <Project Path="TodoListApi.csproj" />
 </Solution>
