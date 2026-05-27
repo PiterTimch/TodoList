@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using BLL.Models.Task;
 using DAL.Entities.Task;
 
@@ -9,5 +9,6 @@ public class TaskMapper : Profile
     public TaskMapper()
     {
         CreateMap<TaskEntity, TaskItemResponse>();
+        CreateMap<CreateTaskRequestModel, TaskEntity>();
     }
 }

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using BLL.Interfaces;
 using BLL.Models.Task;
 using DAL;
@@ -42,5 +42,35 @@ public class TaskService(AppDbContext context, IMapper mapper) : ITaskService
             .ToListAsync();
 
         return mapper.Map<IEnumerable<TaskItemResponse>>(entities);
+    }
+
+    public async Task<TaskItemResponse> CreateTaskAsync(CreateTaskRequestModel request)
+    {
+        if (request.DueDate.HasValue && request.DueDate.Value < DateTime.UtcNow)
+        {
+            throw new ArgumentException("Due date cannot be in the past.");
+        }
+
+        var entity = mapper.Map<TaskEntity>(request);
+        entity.DateCreated = DateTime.UtcNow;
+        entity.IsDeleted = false;
+        entity.IsCompleted = false;
+
+        context.Tasks.Add(entity);
+        await context.SaveChangesAsync();
+
+        return mapper.Map<TaskItemResponse>(entity);
+    }
+
+    public async Task DeleteTaskAsync(long id)
+    {
+        var entity = await context.Tasks.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+        if (entity == null)
+        {
+            throw new KeyNotFoundException($"Task with ID {id} does not exist.");
+        }
+
+        entity.IsDeleted = true;
+        await context.SaveChangesAsync();
     }
 }
