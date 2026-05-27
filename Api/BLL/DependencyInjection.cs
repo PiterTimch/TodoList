@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using DAL;
+using BLL.Interfaces;
+using BLL.Services;
 
 namespace BLL;
 
@@ -11,7 +13,8 @@ public static class DependencyInjection
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString)
         );
-
+        services.AddAutoMapper(typeof(DependencyInjection).Assembly);
+        services.AddScoped<ITaskService, TaskService>();
         return services;
     }
 }

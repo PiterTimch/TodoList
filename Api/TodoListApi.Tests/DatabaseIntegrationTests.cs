@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using BLL;
+using BLL.Interfaces;
+using BLL.Models.Task;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using DAL;
@@ -29,5 +31,70 @@ public class DatabaseIntegrationTests
         var canConnect = await db.Database.CanConnectAsync();
 
         Assert.True(canConnect, "Database should be reachable with the provided connection string");
+    }
+
+    [Fact]
+    public async Task CreateTask_WithPastDueDate_ThrowsArgumentException()
+    {
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = "Development" });
+        builder.Configuration.AddUserSecrets("6d081823-91db-4c00-86d2-1ce41639cc02");
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+        var services = new ServiceCollection();
+        services.AddBusinessLogicServices(connectionString);
+        var provider = services.BuildServiceProvider();
+
+        await using var scope = provider.CreateAsyncScope();
+        var taskService = scope.ServiceProvider.GetRequiredService<ITaskService>();
+
+        var pastTask = new CreateTaskRequestModel
+        {
+            Name = "Past Task",
+            Description = "Should fail",
+            DueDate = DateTime.UtcNow.AddMinutes(-5)
+        };
+
+        await Assert.ThrowsAsync<ArgumentException>(() => taskService.CreateTaskAsync(pastTask));
+    }
+
+    [Fact]
+    public async Task CreateAndDeleteTask_Lifecycle_Succeeds()
+    {
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = "Development" });
+        builder.Configuration.AddUserSecrets("6d081823-91db-4c00-86d2-1ce41639cc02");
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+        var services = new ServiceCollection();
+        services.AddBusinessLogicServices(connectionString);
+        var provider = services.BuildServiceProvider();
+
+        await using var scope = provider.CreateAsyncScope();
+        var taskService = scope.ServiceProvider.GetRequiredService<ITaskService>();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        // 1. Create a task
+        var newTask = new CreateTaskRequestModel
+        {
+            Name = "Integration Test Task",
+            Description = "Testing Lifecycle",
+            DueDate = DateTime.UtcNow.AddDays(1)
+        };
+
+        var created = await taskService.CreateTaskAsync(newTask);
+        Assert.NotNull(created);
+        Assert.True(created.Id > 0);
+        Assert.Equal(newTask.Name, created.Name);
+
+        // 2. Delete the task (soft delete)
+        await taskService.DeleteTaskAsync(created.Id);
+
+        // 3. Verify it is marked as deleted in DB
+        var dbEntity = await db.Tasks.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == created.Id);
+        Assert.NotNull(dbEntity);
+        Assert.True(dbEntity.IsDeleted);
+
+        // Clean up
+        db.Tasks.Remove(dbEntity);
+        await db.SaveChangesAsync();
     }
 }
