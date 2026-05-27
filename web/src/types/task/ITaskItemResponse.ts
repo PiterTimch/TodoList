@@ -2,7 +2,7 @@ export interface ITaskItemResponse {
     id: number;
     name: string;
     description: string;
-    dueDate: Date;
+    dueDate: string | null;
     isCompleted: boolean;
-    dateCreated: Date;
+    dateCreated: string;
 }

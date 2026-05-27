@@ -9,6 +9,7 @@ public class TaskMapper : Profile
     public TaskMapper()
     {
         CreateMap<TaskEntity, TaskItemResponseModel>();
-        CreateMap<CreateTaskRequestModel, TaskEntity>();
+        CreateMap<CreateTaskRequestModel, TaskEntity>()
+            .ForMember(dest => dest.DueDate, opt => opt.Ignore());
     }
 }

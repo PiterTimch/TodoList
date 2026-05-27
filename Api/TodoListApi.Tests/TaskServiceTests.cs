@@ -32,7 +32,7 @@ public class TaskServiceTests
         {
             Name = "GetById Test",
             Description = "Test description",
-            DueDate = DateTime.UtcNow.AddDays(1)
+            DueDate = DateTime.UtcNow.AddDays(1).ToString("yyyy-MM-dd")
         });
 
         Assert.NotNull(created);
@@ -61,7 +61,7 @@ public class TaskServiceTests
         {
             Name = "Complete Test",
             Description = "Test description",
-            DueDate = DateTime.UtcNow.AddDays(1)
+            DueDate = DateTime.UtcNow.AddDays(1).ToString("yyyy-MM-dd")
         });
 
         Assert.False(created.IsCompleted);
@@ -93,7 +93,7 @@ public class TaskServiceTests
         {
             Name = "CaseInsensitiveSearch",
             Description = "Test description",
-            DueDate = DateTime.UtcNow.AddDays(1)
+            DueDate = DateTime.UtcNow.AddDays(1).ToString("yyyy-MM-dd")
         });
 
         var results = await taskService.SearchTasksAsync(new TasksSearchRequestModel
@@ -112,6 +112,34 @@ public class TaskServiceTests
     }
 
     [Fact]
+    public async Task SearchTasks_ByDueDateString_FindsResults()
+    {
+        await using var scope = BuildProvider().CreateAsyncScope();
+        var taskService = scope.ServiceProvider.GetRequiredService<ITaskService>();
+
+        var dueDate = DateTime.UtcNow.AddDays(2).ToString("yyyy-MM-dd");
+        var created = await taskService.CreateTaskAsync(new CreateTaskRequestModel
+        {
+            Name = "DueDateSearch",
+            Description = "Test description",
+            DueDate = dueDate
+        });
+
+        var results = await taskService.SearchTasksAsync(new TasksSearchRequestModel
+        {
+            DueDate = dueDate
+        });
+
+        Assert.Contains(results, x => x.Id == created.Id);
+
+        await using var cleanupScope = BuildProvider().CreateAsyncScope();
+        var db = cleanupScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var entity = await db.Tasks.IgnoreQueryFilters().FirstAsync(x => x.Id == created.Id);
+        db.Tasks.Remove(entity);
+        await db.SaveChangesAsync();
+    }
+
+    [Fact]
     public async Task DeleteTask_MarksAsDeleted()
     {
         await using var scope = BuildProvider().CreateAsyncScope();
@@ -122,7 +150,7 @@ public class TaskServiceTests
         {
             Name = "SoftDelete Test",
             Description = "Test description",
-            DueDate = DateTime.UtcNow.AddDays(1)
+            DueDate = DateTime.UtcNow.AddDays(1).ToString("yyyy-MM-dd")
         });
 
         await taskService.DeleteTaskAsync(created.Id);
