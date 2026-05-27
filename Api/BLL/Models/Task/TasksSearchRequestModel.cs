@@ -1,6 +1,6 @@
 ﻿namespace BLL.Models.Task;
 
-public class SearchTasksRequestModel
+public class TasksSearchRequestModel
 {
     public string? Name { get; set; }
     public string? Description { get; set; }
