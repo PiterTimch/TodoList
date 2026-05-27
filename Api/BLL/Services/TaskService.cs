@@ -73,4 +73,15 @@ public class TaskService(AppDbContext context, IMapper mapper) : ITaskService
         entity.IsDeleted = true;
         await context.SaveChangesAsync();
     }
+
+    public async Task<TaskItemResponse> GetTaskByIdAsync(long id)
+    {
+        var entity = await context.Tasks.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+        if (entity == null)
+        {
+            throw new KeyNotFoundException($"Task with ID {id} does not exist.");
+        }
+        return mapper.Map<TaskItemResponse>(entity);
+    }
+
 }
